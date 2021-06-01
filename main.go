@@ -65,10 +65,12 @@ func main() {
 			}
 			for _, name := range container.Names {
 				for _, network := range container.Networks.Networks {
-					if debug {
-						log.Printf("%s - %s", name[1:], network.IPAddress)
+					if network.IPAddress != "" {
+						if debug {
+							log.Printf("%s - %s", name[1:], network.IPAddress)
+						}
+						add(name[1:], network.IPAddress)
 					}
-					add(name[1:], network.IPAddress)
 				}
 			}
 		}
