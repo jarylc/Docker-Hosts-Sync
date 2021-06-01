@@ -1,0 +1,27 @@
+image: golang:alpine
+
+cache:
+  paths:
+    - /go/src/
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  before_script:
+    - ./ci-prepare.sh
+  script:
+    - CGO_ENABLED=0 go test ./...
+
+deploy-latest:
+  stage: deploy
+  only:
+    - master
+  image: docker:stable
+  services:
+    - name: docker:stable-dind
+      command: [ "--experimental" ]
+  script:
+    - ./ci-deploy.sh latest
