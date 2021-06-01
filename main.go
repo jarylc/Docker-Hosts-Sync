@@ -19,17 +19,18 @@ type host struct {
 	name string
 	ip   string
 }
-var hosts = map[string]host{}
+
+var hosts []host
+
 func add(name string, ip string) {
-	hosts[fmt.Sprintf("%s,%s", name, ip)] = host{
+	hosts = append(hosts, host{
 		name: name,
 		ip:   ip,
-	}
+	})
 }
 func clear() {
-	hosts = map[string]host{}
+	hosts = []host{}
 }
-
 
 func main() {
 	var interrupt = make(chan os.Signal, 1)
@@ -77,7 +78,7 @@ func main() {
 			return
 		}
 		select {
-		case <- interrupt:
+		case <-interrupt:
 			if os.Getenv("EXIT_RESET") == "1" {
 				log.Println("Resetting...")
 				err = reset()
@@ -87,7 +88,7 @@ func main() {
 				}
 			}
 			return
-		case <- time.After(interval * time.Second):
+		case <-time.After(interval * time.Second):
 		}
 	}
 }
@@ -95,6 +96,7 @@ func main() {
 var path = "/etc/hosts"
 var separator = "# DOCKER-HOST-SYNC - AUTO GENERATED - DO NOT REMOVE/EDIT #"
 var regex = regexp.MustCompile("\\n\\n" + separator + "(.|\\n)*" + separator)
+
 func update() error {
 	existing, err := read()
 	if err != nil {

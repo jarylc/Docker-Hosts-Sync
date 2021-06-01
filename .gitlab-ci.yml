@@ -10,8 +10,6 @@ stages:
 
 test:
   stage: test
-  before_script:
-    - ./ci-prepare.sh
   script:
     - CGO_ENABLED=0 go test ./...
 
