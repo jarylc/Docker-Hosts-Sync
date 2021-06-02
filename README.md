@@ -13,20 +13,25 @@ Small and configurable Docker image to synchronize Docker host's /etc/hosts file
 
 ## About The Project
 This application makes possible to communicate via network with Docker images using container names on the Docker host.
+
 ### Features
 - Super lightweight, final docker image based on `scratch`!
 - Updates only on container creation and destruction, doesn't waste resources by checking periodically (i.e. every 5 seconds).
 - `EXIT_RESET` flag to set if changes to `/etc/hosts/` should be reset on exit.
+
 ### Environment Variables
 | Environment | Default value | Description
 |---|---|---|
 | EXIT_RESET | 1 | Reset /etc/hosts on exit |
+
 ### Built With
 * [golang](https://golang.org/)
 * [go-dockerclient](https://github.com/fsouza/go-dockerclient)
 
+
 ## Getting Started
 To get a local copy up and running follow these simple steps.
+
 ### Docker Run
 ```shell
 docker run -it -d \
@@ -37,6 +42,7 @@ docker run -it -d \
   -v /etc/hosts:/etc/hosts \
   jarylc/docker-hosts-sync
 ```
+
 ### Docker-compose
 ```docker-compose
 docker-hosts-sync:
@@ -56,6 +62,7 @@ docker-hosts-sync:
 $ cd /path/to/project/folder
 $ go build -ldflags="-w -s"
 ```
+
 ### Docker build
 ```shell
 $ cd /path/to/project/folder
@@ -73,7 +80,7 @@ Feel free to fork the repository and submit pull requests.
 
 
 ## License
-Distributed under the GNU GENERAL PUBLIC LICENSE V3. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 
 ## Contact
