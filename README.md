@@ -1,7 +1,7 @@
 [![Docker Hosts Sync Logo](docker-hosts-sync.png)](https://gitlab.com/jarylc/docker-hosts-sync)
 
 # Docker Hosts Sync
-Small and configurable Docker image to periodically synchronize Docker host's /etc/hosts file with Docker
+Small and configurable Docker image to synchronize Docker host's /etc/hosts file with Docker, updated on container creation and destruction.
 
 [**Docker Hub Image »**](https://hub.docker.com/r/jarylc/docker-hosts-sync)
 
@@ -13,10 +13,13 @@ Small and configurable Docker image to periodically synchronize Docker host's /e
 
 ## About The Project
 This application makes possible to communicate via network with Docker images using container names on the Docker host.
+### Features
+- Super lightweight, final docker image based on `scratch`!
+- Updates only on container creation and destruction, doesn't waste resources by checking periodically (i.e. every 5 seconds).
+- `EXIT_RESET` flag to set if changes to `/etc/hosts/` should be reset on exit.
 ### Environment Variables
 | Environment | Default value | Description
 |---|---|---|
-| INTERVAL | 60 | Interval in seconds to update /etc/hosts |
 | EXIT_RESET | 1 | Reset /etc/hosts on exit |
 ### Built With
 * [golang](https://golang.org/)
@@ -28,7 +31,7 @@ To get a local copy up and running follow these simple steps.
 ```shell
 docker run -it -d \
   --name docker-hosts-sync \
-  -e INTERVAL=60 \
+  --privileged \
   -e EXIT_RESET=1 \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
   -v /etc/hosts:/etc/hosts \
@@ -38,8 +41,8 @@ docker run -it -d \
 ```docker-compose
 docker-hosts-sync:
     image: jarylc/docker-hosts-sync
+    privileged: true
     environment:
-      - INTERVAL=60
       - EXIT_RESET=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -8,12 +8,15 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
 
 var debug = os.Getenv("DEBUG") == "1"
+
+var path = "/etc/hosts"
+var separator = "# DOCKER-HOST-SYNC - AUTO GENERATED - DO NOT REMOVE/EDIT #"
+var regex = regexp.MustCompile("\\n\\n" + separator + "(.|\\n)*" + separator)
 
 type host struct {
 	name string
@@ -32,32 +35,34 @@ func clear() {
 	hosts = []host{}
 }
 
+//nolint:funlen
 func main() {
 	var interrupt = make(chan os.Signal, 1)
 	defer close(interrupt)
 	signal.Notify(interrupt, os.Interrupt)
 
-	var envInterval = os.Getenv("INTERVAL")
-	interval := time.Duration(60)
-	if envInterval != "" {
-		intInterval, err := strconv.Atoi(envInterval)
-		if err != nil {
-			log.Panic(err)
-		}
-		interval = time.Duration(intInterval)
-	}
-
 	client, err := docker.NewClientFromEnv()
 	if err != nil {
 		log.Panic(err)
 	}
-	containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
+
+	change := make(chan *docker.APIEvents)
+	err = client.AddEventListenerWithOptions(docker.EventsOptions{
+		Filters: map[string][]string{
+			"type":  {"container"},
+			"event": {"create", "destroy"},
+		},
+	}, change)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	log.Println("Started.")
 	for {
+		containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
+		if err != nil {
+			log.Panic(err)
+		}
 		clear()
 		for _, container := range containers {
 			if strings.Contains(container.Image, "docker-hosts-sync") { // ignore this container
@@ -90,14 +95,14 @@ func main() {
 				}
 			}
 			return
-		case <-time.After(interval * time.Second):
+		case <-change:
+			if debug {
+				log.Println("Containers changed.")
+				time.Sleep(time.Second)
+			}
 		}
 	}
 }
-
-var path = "/etc/hosts"
-var separator = "# DOCKER-HOST-SYNC - AUTO GENERATED - DO NOT REMOVE/EDIT #"
-var regex = regexp.MustCompile("\\n\\n" + separator + "(.|\\n)*" + separator)
 
 func update() error {
 	existing, err := read()
