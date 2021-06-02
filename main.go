@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -39,7 +40,7 @@ func clear() {
 func main() {
 	var interrupt = make(chan os.Signal, 1)
 	defer close(interrupt)
-	signal.Notify(interrupt, os.Interrupt)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	client, err := docker.NewClientFromEnv()
 	if err != nil {
