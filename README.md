@@ -1,7 +1,7 @@
 [![Docker Hosts Sync Logo](docker-hosts-sync.png)](https://gitlab.com/jarylc/docker-hosts-sync)
 
 # Docker Hosts Sync
-Small and configurable Docker image to synchronize Docker host's /etc/hosts file with Docker, updated on container creation and destruction.
+Lightweight Docker image to synchronize Docker host's /etc/hosts file with Docker on container creation and destruction.
 
 [**Docker Hub Image »**](https://hub.docker.com/r/jarylc/docker-hosts-sync)
 
@@ -12,7 +12,7 @@ Small and configurable Docker image to synchronize Docker host's /etc/hosts file
 
 
 ## About The Project
-This application makes possible to communicate via network with Docker images using container names on the Docker host.
+This application makes possible to communicate via network with Docker containers via their container names on the Docker host. It's like as though you were communicating with another container within one!
 
 ### Features
 - Super lightweight, final docker image based on `scratch`!
