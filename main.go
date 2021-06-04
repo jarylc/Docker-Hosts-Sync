@@ -99,8 +99,8 @@ func main() {
 		case <-change:
 			if debug {
 				log.Println("Containers changed.")
-				time.Sleep(time.Second)
 			}
+			time.Sleep(time.Second)
 		}
 	}
 }
