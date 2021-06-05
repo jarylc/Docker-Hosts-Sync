@@ -1,7 +1,7 @@
 [![Docker Hosts Sync Logo](docker-hosts-sync.png)](https://gitlab.com/jarylc/docker-hosts-sync)
 
 # Docker Hosts Sync
-Lightweight Docker image to synchronize Docker host's /etc/hosts file with Docker on container creation and destruction.
+Lightweight Docker image to synchronize Docker host's /etc/hosts file with Docker on container start and destruction.
 
 [**Docker Hub Image »**](https://hub.docker.com/r/jarylc/docker-hosts-sync)
 
@@ -16,7 +16,7 @@ This application makes possible to communicate via network with Docker container
 
 ### Features
 - Super lightweight, final docker image based on `scratch`!
-- Updates only on container creation and destruction, doesn't waste resources by checking periodically (i.e. every 5 seconds).
+- Updates only on container start and destruction, doesn't waste resources by checking periodically (i.e. every 5 seconds).
 - `EXIT_RESET` flag to set if changes to `/etc/hosts/` should be reset on exit.
 
 ### Environment Variables

@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
-	"time"
 )
 
 var debug = os.Getenv("DEBUG") == "1"
@@ -51,7 +50,7 @@ func main() {
 	err = client.AddEventListenerWithOptions(docker.EventsOptions{
 		Filters: map[string][]string{
 			"type":  {"container"},
-			"event": {"create", "destroy"},
+			"event": {"start", "destroy"},
 		},
 	}, change)
 	if err != nil {
@@ -100,7 +99,6 @@ func main() {
 			if debug {
 				log.Println("Containers changed.")
 			}
-			time.Sleep(time.Second)
 		}
 	}
 }
