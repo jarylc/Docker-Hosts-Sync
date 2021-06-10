@@ -5,16 +5,19 @@ cache:
     - /go/src/
 stages:
   - test
-  - build
   - deploy
 
 test:
   stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
     - CGO_ENABLED=0 go test ./...
 
 deploy-latest:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   only:
     - master
   image: docker:stable
