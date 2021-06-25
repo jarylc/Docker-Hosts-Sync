@@ -34,12 +34,13 @@ To get a local copy up and running follow these simple steps.
 
 ### Docker Run
 ```shell
-docker run -it -d \
+docker run -d \
   --name docker-hosts-sync \
   --privileged \
   -e EXIT_RESET=1 \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
   -v /etc/hosts:/etc/hosts \
+  --restart unless-stopped \
   jarylc/docker-hosts-sync
 ```
 
@@ -53,6 +54,7 @@ docker-hosts-sync:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/hosts:/etc/hosts
+    restart: unless-stopped
 ```
 
 
